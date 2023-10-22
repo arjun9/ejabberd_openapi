@@ -1,0 +1,4730 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI Documentation for Ejabberd HTTP APIs
+  description: APIs for managing Ejabberd server
+  version: 1.0.0
+paths:
+  /api/abort_delete_old_mam_messages:
+    post:
+      summary: Abort currently running delete old MAM messages operation.
+      tags:
+        - purge
+      operationId: abortDeleteOldMamMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where operation should be aborted.
+      responses:
+        '200':
+          description: Operation aborted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status text.
+              example:
+                status: Operation aborted
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided host was not found. Check available hosts and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/abort_delete_old_messages:
+    post:
+      summary: Abort currently running delete old offline messages operation.
+      tags:
+        - purge
+      operationId: abortDeleteOldMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where operation should be aborted.
+      responses:
+        '200':
+          description: Operation aborted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status text.
+              example:
+                status: Operation aborted
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided host was not found. Check available hosts and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+  /api/add_rosteritem:
+    post:
+      summary: Add an item to a user's roster (supports ODBC). Groups can be multiple, separated by ; (e.g., g1;g2;g3).
+      tags:
+        - roster
+      operationId: addRosterItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                localuser:
+                  type: string
+                  description: User name.
+                localhost:
+                  type: string
+                  description: Server name.
+                user:
+                  type: string
+                  description: Contact user name.
+                host:
+                  type: string
+                  description: Contact server name.
+                nick:
+                  type: string
+                  description: Nickname.
+                group:
+                  type: string
+                  description: Group.
+                subs:
+                  type: string
+                  description: Subscription.
+      responses:
+        '200':
+          description: Roster item added successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/backup:
+    post:
+      summary: Backup the Mnesia database to a binary file.
+      tags:
+        - mnesia
+      operationId: backup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path for the destination backup file.
+      responses:
+        '200':
+          description: Database backed up successfully.
+          content:
+            text/plain:
+              example: "Success"
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/ban_account:
+    post:
+      summary: Ban an account by kicking sessions and setting a random password.
+      tags:
+        - accounts
+      operationId: banAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name to ban.
+                host:
+                  type: string
+                  description: Server name.
+                reason:
+                  type: string
+                  description: Reason for banning user.
+      responses:
+        '200':
+          description: Account banned successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided user was not found on the server. Check the user and host, then retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/bookmarks_to_pep:
+    post:
+      summary: Export private XML storage bookmarks to PEP.
+      tags:
+        - private
+      operationId: bookmarksToPep
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: Server.
+      responses:
+        '200':
+          description: Bookmarks exported successfully.
+          content:
+            text/plain:
+              example: "Bookmarks exported"
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+  /api/change_password:
+    post:
+      summary: Change the password of an account.
+      tags:
+        - accounts
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                newpass:
+                  type: string
+                  description: New password for the user.
+      responses:
+        '200':
+          description: Password changed successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided user or host was not found. Check the details and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/change_room_option:
+    post:
+      summary: Change an option in a MUC room.
+      tags:
+        - muc_room
+      operationId: changeRoomOption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                option:
+                  type: string
+                  description: Option name.
+                value:
+                  type: string
+                  description: Value to assign.
+      responses:
+        '200':
+          description: Room option changed successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided room, service, or option was not found. Check the details and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/check_account:
+    post:
+      summary: Check if an account exists or not.
+      tags:
+        - accounts
+      operationId: checkAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name to check.
+                host:
+                  type: string
+                  description: Server to check.
+      responses:
+        '200':
+          description: Account existence checked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided user or host was not found. Check the details and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/check_password:
+    post:
+      summary: Check if a password is correct for a given user and host.
+      tags:
+        - accounts
+      operationId: checkPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name to check.
+                host:
+                  type: string
+                  description: Server to check.
+                password:
+                  type: string
+                  description: Password to check.
+      responses:
+        '200':
+          description: Password checked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided user or host was not found, or the password does not match. Check the details and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/check_password_hash:
+    post:
+      summary: Check if the password hash for a user is correct. Allows hash methods from the Erlang/OTP crypto application.
+      tags:
+        - accounts
+      operationId: checkPasswordHash
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name to check.
+                host:
+                  type: string
+                  description: Server to check.
+                passwordhash:
+                  type: string
+                  description: Password's hash value.
+                hashmethod:
+                  type: string
+                  description: Name of hash method.
+      responses:
+        '200':
+          description: Password hash checked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided user, host, or hash method was not found or does not match. Check the details and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/clear_cache:
+    post:
+      summary: Clear database cache on all nodes.
+      tags:
+        - server
+      operationId: clearCache
+      responses:
+        '200':
+          description: Cache cleared successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/compile:
+    post:
+      summary: Recompile and reload Erlang source code file.
+      tags:
+        - erlang
+      operationId: compile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Filename of Erlang source file to compile.
+      responses:
+        '200':
+          description: File compiled and reloaded successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/connected_users:
+    post:
+      summary: List all established user sessions.
+      tags:
+        - session
+      operationId: connectedUsers
+      responses:
+        '200':
+          description: List of established user sessions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                - "user1@example.com"
+                - "user2@example.com"
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/connected_users_info:
+    post:
+      summary: List all established sessions and their information.
+      tags:
+        - session
+      operationId: connectedUsersInfo
+      responses:
+        '200':
+          description: Detailed list of established user sessions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    jid:
+                      type: string
+                      description: User JID.
+                    connection:
+                      type: string
+                      description: Connection type.
+                    ip:
+                      type: string
+                      description: IP address.
+                    port:
+                      type: integer
+                      description: Port number.
+                    priority:
+                      type: integer
+                      description: Priority.
+                    node:
+                      type: string
+                      description: Node.
+                    uptime:
+                      type: integer
+                      description: Uptime.
+                    status:
+                      type: string
+                      description: Status.
+                    resource:
+                      type: string
+                      description: Resource.
+                    statustext:
+                      type: string
+                      description: Status text.
+              example:
+                - jid: "user1@myserver.com/tka"
+                  connection: "c2s"
+                  ip: "127.0.0.1"
+                  port: 42656
+                  priority: 8
+                  node: "ejabberd@localhost"
+                  uptime: 231
+                  status: "dnd"
+                  resource: "tka"
+                  statustext: ""
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/connected_users_number:
+    post:
+      summary: Get the number of established sessions.
+      tags:
+        - session
+        - statistics
+      operationId: connectedUsersNumber
+      responses:
+        '200':
+          description: Number of established user sessions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  num_sessions:
+                    type: integer
+                    description: Number of established sessions.
+              example:
+                num_sessions: 2
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/connected_users_vhost:
+    post:
+      summary: Get the list of established sessions in a vhost.
+      tags:
+        - session
+      operationId: connectedUsersVHost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: List of established sessions for the given vhost retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                - "user1@myserver.com/tka"
+                - "user2@localhost/tka"
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided vhost was not found. Check available vhosts and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/convert_to_scram:
+    post:
+      summary: Convert the passwords of users to SCRAM for a given vhost.
+      tags:
+        - sql
+      operationId: convertToScram
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Vhost which users' passwords will be scrammed.
+      responses:
+        '200':
+          description: Passwords converted to SCRAM successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '404':
+          description: The provided vhost was not found. Check available vhosts and retry.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/convert_to_yaml:
+    post:
+      summary: Convert the input configuration file from Erlang to YAML format.
+      tags:
+        - config
+      operationId: convertToYaml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                in:
+                  type: string
+                  description: Full path to the original configuration file.
+                out:
+                  type: string
+                  description: Full path to the final YAML configuration file.
+      responses:
+        '200':
+          description: Configuration file converted to YAML successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/create_room:
+    post:
+      summary: Create a MUC room using name@service in the given host.
+      tags:
+        - muc_room
+      operationId: createRoom
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                host:
+                  type: string
+                  description: Server host.
+      responses:
+        '200':
+          description: MUC room created successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/create_room_with_opts:
+    post:
+      summary: Create a MUC room using name@service in the given host with specific options.
+      tags:
+        - muc_room
+      operationId: createRoomWithOptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                host:
+                  type: string
+                  description: Server host.
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Option name.
+                      value:
+                        type: string
+                        description: Value for the option.
+      responses:
+        '200':
+          description: MUC room with specific options created successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/create_rooms_file:
+    post:
+      summary: Create the rooms indicated in file.
+      tags:
+        - muc
+      operationId: createRoomsFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to the text file with one room JID per line.
+      responses:
+        '200':
+          description: Rooms indicated in file created successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_expired_messages:
+    post:
+      summary: Delete expired offline messages from database.
+      tags:
+        - purge
+      operationId: deleteExpiredMessages
+      responses:
+        '200':
+          description: Expired offline messages deleted successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_expired_pubsub_items:
+    post:
+      summary: Delete expired PubSub items.
+      tags:
+        - purge
+      operationId: deleteExpiredPubsubItems
+      responses:
+        '200':
+          description: Expired PubSub items deleted successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_mnesia:
+    post:
+      summary: Delete elements in Mnesia database for a given vhost.
+      tags:
+        - mnesia
+      operationId: deleteMnesia
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Vhost which content will be deleted in Mnesia database.
+      responses:
+        '200':
+          description: Elements in Mnesia database for the given vhost deleted successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_mam_messages:
+    post:
+      summary: Delete MAM messages older than DAYS.
+      tags:
+        - purge
+      operationId: deleteOldMAMMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: Type of messages to delete (chat, groupchat, all).
+                days:
+                  type: integer
+                  description: Days to keep messages.
+      responses:
+        '200':
+          description: Old MAM messages deleted successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_mam_messages_batch:
+    post:
+      summary: Delete MAM messages older than DAYS in batches.
+      tags:
+        - purge
+      operationId: deleteOldMAMMessagesBatch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where messages should be deleted.
+                type:
+                  type: string
+                  description: Type of messages to delete (chat, groupchat, all).
+                days:
+                  type: integer
+                  description: Days to keep messages.
+                batch_size:
+                  type: integer
+                  description: Number of messages to delete per batch.
+                rate:
+                  type: integer
+                  description: Desired rate of messages to delete per minute.
+      responses:
+        '200':
+          description: Old MAM messages batch deletion started successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_mam_messages_status:
+    post:
+      summary: Status of delete old MAM messages operation.
+      tags:
+        - purge
+      operationId: deleteOldMAMMessagesStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where messages should be deleted.
+      responses:
+        '200':
+          description: Status of delete old MAM messages operation retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status text.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_messages:
+    post:
+      summary: Delete offline messages older than DAYS.
+      tags:
+        - purge
+      operationId: deleteOldMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                days:
+                  type: integer
+                  description: Number of days.
+      responses:
+        '200':
+          description: Old offline messages deleted successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_messages_batch:
+    post:
+      summary: Delete offline messages older than DAYS.
+      tags:
+        - purge
+      operationId: deleteOldMessagesBatch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where messages should be deleted.
+                days:
+                  type: integer
+                  description: Days to keep messages.
+                batch_size:
+                  type: integer
+                  description: Number of messages to delete per batch.
+                rate:
+                  type: integer
+                  description: Desired rate of messages to delete per minute.
+      responses:
+        '200':
+          description: Batch deletion of old offline messages initiated successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_messages_status:
+    post:
+      summary: Status of delete old offline messages operation.
+      tags:
+        - purge
+      operationId: deleteOldMessagesStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Name of host where messages should be deleted.
+      responses:
+        '200':
+          description: Status of delete old offline messages operation retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Status text.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_pubsub_items:
+    post:
+      summary: Keep only NUMBER of PubSub items per node.
+      tags:
+        - purge
+      operationId: deleteOldPubsubItems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: integer
+                  description: Number of items to keep per node.
+      responses:
+        '200':
+          description: Operation completed successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_push_sessions:
+    post:
+      summary: Remove push sessions older than DAYS.
+      tags:
+        - purge
+      operationId: deleteOldPushSessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                days:
+                  type: integer
+                  description: Number of days.
+      responses:
+        '200':
+          description: Operation completed successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/delete_old_users:
+    post:
+      summary: Delete users that didn't log in last days, or that never logged.
+      tags:
+        - accounts
+        - purge
+      operationId: deleteOldUsers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                days:
+                  type: integer
+                  description: Last login age in days of accounts that should be removed.
+      responses:
+        '200':
+          description: Users deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/dump:
+    post:
+      summary: Dump the Mnesia database to a text file.
+      tags:
+        - mnesia
+      operationId: dump
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path for the text file.
+      responses:
+        '200':
+          description: Database dumped successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/dump_config:
+    post:
+      summary: Dump configuration in YAML format as seen by ejabberd.
+      tags:
+        - config
+      operationId: dumpConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                out:
+                  type: string
+                  description: Full path to output file.
+      responses:
+        '200':
+          description: Configuration dumped successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/dump_table:
+    post:
+      summary: Dump a Mnesia table to a text file.
+      tags:
+        - mnesia
+      operationId: dumpTable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path for the text file.
+                table:
+                  type: string
+                  description: Table name.
+      responses:
+        '200':
+          description: Table dumped successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/export2sql:
+    post:
+      summary: Export virtual host information from Mnesia tables to SQL file.
+      tags:
+        - mnesia
+      operationId: export2sql
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Vhost.
+                file:
+                  type: string
+                  description: Full path to the destination SQL file.
+      responses:
+        '200':
+          description: Host information exported successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/export_piefxis:
+    post:
+      summary: Export data of all users in the server to PIEFXIS files (XEP-0227).
+      tags:
+        - mnesia
+      operationId: exportPiefxis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dir:
+                  type: string
+                  description: Full path to a directory.
+      responses:
+        '200':
+          description: Data exported successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/export_piefxis_host:
+    post:
+      summary: Export data of users in a host to PIEFXIS files (XEP-0227).
+      tags:
+        - mnesia
+      operationId: exportPiefxisHost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dir:
+                  type: string
+                  description: Full path to a directory.
+                host:
+                  type: string
+                  description: Vhost to export.
+      responses:
+        '200':
+          description: Host data exported successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/gc:
+    post:
+      summary: Force full garbage collection.
+      tags:
+        - server
+      operationId: gc
+      responses:
+        '200':
+          description: Garbage collection triggered successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/gen_html_doc_for_commands:
+    post:
+      summary: Generates html documentation for ejabberd_commands.
+      tags:
+        - documentation
+      operationId: genHtmlDocForCommands
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to file where generated documentation should be stored.
+                regexp:
+                  type: string
+                  description: Regexp matching names of commands or modules that will be included inside generated document.
+                examples:
+                  type: string
+                  description: Comma separated list of languages (chosen from java, perl, xmlrpc, json) that will have example invocation include in markdown document.
+      responses:
+        '200':
+          description: Documentation generated successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/gen_markdown_doc_for_commands:
+    post:
+      summary: Generates markdown documentation for ejabberd_commands.
+      tags:
+        - documentation
+      operationId: genMarkdownDocForCommands
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to file where generated documentation should be stored.
+                regexp:
+                  type: string
+                  description: Regexp matching names of commands or modules that will be included inside generated document.
+                examples:
+                  type: string
+                  description: Comma separated list of languages (chosen from java, perl, xmlrpc, json) that will have example invocation include in markdown document.
+      responses:
+        '200':
+          description: Documentation generated successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/gen_markdown_doc_for_tags:
+    post:
+      summary: Generates markdown documentation for ejabberd_commands.
+      tags:
+        - documentation
+      operationId: genMarkdownDocForTags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to file where generated documentation should be stored.
+      responses:
+        '200':
+          description: Documentation generated successfully.
+          content:
+            application/json:
+              schema:
+                type: integer
+                description: Status code (0 on success, 1 otherwise).
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_cookie:
+    post:
+      summary: Get the Erlang cookie of this node.
+      tags:
+        - erlang
+      operationId: getCookie
+      responses:
+        '200':
+          description: Cookie retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cookie:
+                    type: string
+                    description: Erlang cookie used for authentication by ejabberd.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_last:
+    post:
+      summary: Get last activity information.
+      tags:
+        - last
+      operationId: getLast
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Last activity information retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    description: Last activity timestamp.
+                  status:
+                    type: string
+                    description: User's last status.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_loglevel:
+    post:
+      summary: Get the current log level.
+      tags:
+        - logs
+      operationId: getLoglevel
+      responses:
+        '200':
+          description: Current log level retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  levelatom:
+                    type: string
+                    description: Tuple with the log level number, its keyword and description.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_offline_count:
+    post:
+      summary: Get the number of unread offline messages.
+      tags:
+        - offline
+      operationId: getOfflineCount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+      responses:
+        '200':
+          description: Number of unread offline messages retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: integer
+                    description: Number of unread offline messages.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_presence:
+    post:
+      summary: Retrieve the resource with highest priority, and its presence for a given user.
+      tags:
+        - session
+      operationId: getPresence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Presence information retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jid:
+                    type: string
+                    description: User JID with resource.
+                  show:
+                    type: string
+                    description: User presence flag.
+                  status:
+                    type: string
+                    description: Free text defined by the user client.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_affiliation:
+    post:
+      summary: Get affiliation of a user in MUC room.
+      tags:
+        - muc_room
+      operationId: getRoomAffiliation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                jid:
+                  type: string
+                  description: User JID.
+      responses:
+        '200':
+          description: Affiliation of the user retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  affiliation:
+                    type: string
+                    description: Affiliation of the user.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_affiliations:
+    post:
+      summary: Get the list of affiliations of a MUC room.
+      tags:
+        - muc_room
+      operationId: getRoomAffiliations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: List of affiliations retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    domain:
+                      type: string
+                    affiliation:
+                      type: string
+                    reason:
+                      type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_history:
+    post:
+      summary: Get history of messages stored inside MUC room state.
+      tags:
+        - muc_room
+      operationId: getRoomHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: History of messages retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                    message:
+                      type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_occupants:
+    post:
+      summary: Get the list of occupants of a MUC room.
+      tags:
+        - muc_room
+      operationId: getRoomOccupants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: List of occupants retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    jid:
+                      type: string
+                    nick:
+                      type: string
+                    role:
+                      type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_occupants_number:
+    post:
+      summary: Get the number of occupants of a MUC room.
+      tags:
+        - muc_room
+      operationId: getRoomOccupantsNumber
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: Number of room occupants retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  occupants:
+                    type: integer
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_room_options:
+    post:
+      summary: Get options from a MUC room.
+      tags:
+        - muc_room
+      operationId: getRoomOptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: List of room options retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_roster:
+    post:
+      summary: Get list of contacts in a local user roster.
+      tags:
+        - roster
+      operationId: getRoster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+      responses:
+        '200':
+          description: List of contacts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    jid:
+                      type: string
+                    nick:
+                      type: string
+                    subscription:
+                      type: string
+                    pending:
+                      type: string
+                    groups:
+                      type: array
+                      items:
+                        type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_subscribers:
+    post:
+      summary: List subscribers of a MUC conference.
+      tags:
+        - muc_room
+      operationId: getSubscribers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: List of subscribers retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_user_rooms:
+    post:
+      summary: Get the list of rooms where this user is occupant.
+      tags:
+        - muc
+      operationId: getUserRooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: Server host.
+      responses:
+        '200':
+          description: List of rooms retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_user_subscriptions:
+    post:
+      summary: Get the list of rooms where this user is subscribed.
+      tags:
+        - muc
+      operationId: getUserSubscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: Server host.
+      responses:
+        '200':
+          description: List of rooms with subscriptions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    roomjid:
+                      type: string
+                    usernick:
+                      type: string
+                    nodes:
+                      type: array
+                      items:
+                        type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_vcard:
+    post:
+      summary: Get content from a vCard field.
+      tags:
+        - vcard
+      operationId: getVcard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                name:
+                  type: string
+                  description: Field name.
+      responses:
+        '200':
+          description: vCard field content retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_vcard2:
+    post:
+      summary: Get content from a vCard subfield.
+      tags:
+        - vcard
+      operationId: getVcard2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                name:
+                  type: string
+                  description: Field name.
+                subname:
+                  type: string
+                  description: Subfield name.
+      responses:
+        '200':
+          description: vCard subfield content retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/get_vcard2_multi:
+    post:
+      summary: Get multiple contents from a vCard field.
+      tags:
+        - vcard
+      operationId: getVcard2Multi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                name:
+                  type: string
+                subname:
+                  type: string
+      responses:
+        '200':
+          description: Multiple vCard contents retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/halt:
+    post:
+      summary: Halt ejabberd abruptly with status code 1.
+      tags:
+        - server
+      operationId: halt
+      responses:
+        '200':
+          description: Ejabberd halted successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/import_dir:
+    post:
+      summary: Import users data from jabberd14 spool dir.
+      tags:
+        - mnesia
+      operationId: importDir
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the jabberd14 spool directory.
+      responses:
+        '200':
+          description: Users data imported successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/import_file:
+    post:
+      summary: Import user data from jabberd14 spool file.
+      tags:
+        - mnesia
+      operationId: importFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the jabberd14 spool file.
+      responses:
+        '200':
+          description: User data imported successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/import_piefxis:
+    post:
+      summary: Import users data from a PIEFXIS file (XEP-0227).
+      tags:
+        - mnesia
+      operationId: importPiefxis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the PIEFXIS file.
+      responses:
+        '200':
+          description: Users data imported successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/import_prosody:
+    post:
+      summary: Import data from Prosody.
+      tags:
+        - mnesia
+        - sql
+      operationId: importProsody
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dir:
+                  type: string
+                  description: Full path to the Prosody data directory.
+      responses:
+        '200':
+          description: Data imported successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/incoming_s2s_number:
+    post:
+      summary: Number of incoming s2s connections on the node.
+      tags:
+        - statistics
+        - s2s
+      operationId: incomingS2sNumber
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s2s_incoming:
+                    type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/install_fallback:
+    post:
+      summary: Install Mnesia database from a binary backup file.
+      tags:
+        - mnesia
+      operationId: installFallback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the fallback file.
+      responses:
+        '200':
+          description: Database installed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/join_cluster:
+    post:
+      summary: Join this node into the cluster handled by Node.
+      tags:
+        - cluster
+      operationId: joinCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                node:
+                  type: string
+                  description: Nodename of the node to join.
+      responses:
+        '200':
+          description: Node joined successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/kick_session:
+    post:
+      summary: Kick a user session.
+      tags:
+        - session
+      operationId: kickSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                resource:
+                  type: string
+                  description: User's resource.
+                reason:
+                  type: string
+                  description: Reason for closing session.
+      responses:
+        '200':
+          description: Session kicked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/kick_user:
+    post:
+      summary: Disconnect user's active sessions.
+      tags:
+        - session
+      operationId: kickUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: User's active sessions disconnected successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  num_resources:
+                    type: integer
+                    description: Number of resources that were kicked.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/leave_cluster:
+    post:
+      summary: Remove and shutdown Node from the running cluster.
+      tags:
+        - cluster
+      operationId: leaveCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                node:
+                  type: string
+                  description: Nodename of the node to kick from the cluster.
+      responses:
+        '200':
+          description: Node removed and shutdown successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/list_certificates:
+    post:
+      summary: Lists all ACME certificates.
+      tags:
+        - acme
+      operationId: listCertificates
+      responses:
+        '200':
+          description: List of ACME certificates.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    domain:
+                      type: string
+                      description: Domain name.
+                    file:
+                      type: string
+                      description: File path.
+                    used:
+                      type: string
+                      description: Usage status.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/list_cluster:
+    post:
+      summary: List nodes that are part of the cluster handled by Node.
+      tags:
+        - cluster
+      operationId: listCluster
+      responses:
+        '200':
+          description: List of cluster nodes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Node name.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/load:
+    post:
+      summary: Restore Mnesia database from a text dump file.
+      tags:
+        - mnesia
+      operationId: loadDatabase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the text file.
+      responses:
+        '200':
+          description: Database restored successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/man:
+    post:
+      summary: Generate Unix manpage for current ejabberd version.
+      tags:
+        - documentation
+      operationId: generateManpage
+      responses:
+        '200':
+          description: Manpage generated successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/mnesia_change_nodename:
+    post:
+      summary: Change the erlang node name in a backup file.
+      tags:
+        - mnesia
+      operationId: changeNodeName
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldnodename:
+                  type: string
+                  description: Name of the old erlang node.
+                newnodename:
+                  type: string
+                  description: Name of the new node.
+                oldbackup:
+                  type: string
+                  description: Path to old backup file.
+                newbackup:
+                  type: string
+                  description: Path to the new backup file.
+      responses:
+        '200':
+          description: Node name changed successfully in backup file.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/mnesia_info:
+    post:
+      summary: Dump info on global Mnesia state.
+      tags:
+        - mnesia
+      operationId: globalMnesiaInfo
+      responses:
+        '200':
+          description: Global Mnesia state information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/mnesia_table_info:
+    post:
+      summary: Dump info on Mnesia table state.
+      tags:
+        - mnesia
+      operationId: tableMnesiaInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                table:
+                  type: string
+                  description: Mnesia table name.
+      responses:
+        '200':
+          description: Mnesia table state information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/module_check:
+    post:
+      summary: Check the contributed module repository compliance.
+      tags:
+        - modules
+      operationId: checkModule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module:
+                  type: string
+                  description: Module name.
+      responses:
+        '200':
+          description: Module checked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/module_install:
+    post:
+      summary: Compile, install and start an available contributed module.
+      tags:
+        - modules
+      operationId: installModule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module:
+                  type: string
+                  description: Module name.
+      responses:
+        '200':
+          description: Module installed and started successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/module_uninstall:
+    post:
+      summary: Uninstall a contributed module.
+      tags:
+        - modules
+      operationId: uninstallModule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module:
+                  type: string
+                  description: Module name.
+      responses:
+        '200':
+          description: Module uninstalled successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/module_upgrade:
+    post:
+      summary: Upgrade the running code of an installed module.
+      tags:
+        - modules
+      operationId: upgradeModule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module:
+                  type: string
+                  description: Module name.
+      responses:
+        '200':
+          description: Module upgraded successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/modules_available:
+    post:
+      summary: List the contributed modules available to install.
+      tags:
+        - modules
+      operationId: listAvailableModules
+      responses:
+        '200':
+          description: List of available modules.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/modules_installed:
+    post:
+      summary: List the contributed modules already installed.
+      tags:
+        - modules
+      operationId: listInstalledModules
+      responses:
+        '200':
+          description: List of installed modules.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/modules_update_specs:
+    post:
+      summary: Update the module source code from Git.
+      tags:
+        - modules
+      operationId: updateModuleSpecs
+      responses:
+        '200':
+          description: Module source code updated successfully.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/muc_online_rooms:
+    post:
+      summary: List existing rooms ('global' to get all vhosts).
+      tags:
+        - muc
+      operationId: listMucOnlineRooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service, or 'global' for all.
+      responses:
+        '200':
+          description: List of online rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/muc_online_rooms_by_regex:
+    post:
+      summary: List existing rooms ('global' to get all vhosts) by regex.
+      tags:
+        - muc
+      operationId: listMucOnlineRoomsByRegex
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service, or 'global' for all.
+                regex:
+                  type: string
+                  description: Regex pattern for room name.
+      responses:
+        '200':
+          description: List of online rooms matching the regex.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    jid:
+                      type: string
+                    public:
+                      type: string
+                    participants:
+                      type: integer
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/muc_register_nick:
+    post:
+      summary: Register a nick to a User JID in a MUC service.
+      tags:
+        - muc
+      operationId: registerMucNick
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nick:
+                  type: string
+                  description: Nick.
+                jid:
+                  type: string
+                  description: User JID.
+                service:
+                  type: string
+                  description: Service.
+      responses:
+        '200':
+          description: Nick registered successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/muc_unregister_nick:
+    post:
+      summary: Unregister the nick registered by that account in the MUC service.
+      tags:
+        - muc
+      operationId: unregisterMucNick
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jid:
+                  type: string
+                  description: User JID.
+                service:
+                  type: string
+                  description: MUC service.
+      responses:
+        '200':
+          description: Nick unregistered successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/num_resources:
+    post:
+      summary: Get the number of resources of a user.
+      tags:
+        - session
+      operationId: getNumResources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Number of active resources for a user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resources:
+                    type: integer
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_add_client_implicit:
+    post:
+      summary: Add OAUTH client_id with implicit grant type.
+      tags:
+        - oauth
+      operationId: addOAuthClientImplicit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Client ID.
+                client_name:
+                  type: string
+                  description: Client Name.
+                redirect_uri:
+                  type: string
+                  description: Redirect URI.
+      responses:
+        '200':
+          description: OAuth client added successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_add_client_password:
+    post:
+      summary: Add OAUTH client_id with password grant type.
+      tags:
+        - oauth
+      operationId: addOAuthClientPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Client ID.
+                client_name:
+                  type: string
+                  description: Client Name.
+                secret:
+                  type: string
+                  description: Secret.
+      responses:
+        '200':
+          description: OAuth client added successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_issue_token:
+    post:
+      summary: Issue an oauth token for the given jid.
+      tags:
+        - oauth
+      operationId: issueOAuthToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jid:
+                  type: string
+                  description: JID for which to issue token.
+                ttl:
+                  type: integer
+                  description: Time to live of generated token in seconds.
+                scopes:
+                  type: string
+                  description: List of scopes to allow, separated by ';'.
+      responses:
+        '200':
+          description: OAuth token issued successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  scopes:
+                    type: string
+                  expires_in:
+                    type: string
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_list_tokens:
+    post:
+      summary: List OAuth tokens, their users and scopes, and their time until expiration.
+      tags:
+        - oauth
+      operationId: listOAuthTokens
+      responses:
+        '200':
+          description: Successfully retrieved the list of OAuth tokens.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                    user:
+                      type: string
+                    scope:
+                      type: string
+                    expires_in:
+                      type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_remove_client:
+    post:
+      summary: Remove an OAuth client_id.
+      tags:
+        - oauth
+      operationId: removeOAuthClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Client ID to remove.
+      responses:
+        '200':
+          description: OAuth client removed successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/oauth_revoke_token:
+    post:
+      summary: Revoke an existing OAuth token.
+      tags:
+        - oauth
+      operationId: revokeOAuthToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Token to revoke.
+      responses:
+        '200':
+          description: OAuth token revoked successfully.
+        '400':
+          description: Bad request, the provided input does not match the expected format.
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/outgoing_s2s_number:
+    post:
+      summary: Number of outgoing s2s connections on the node.
+      tags:
+        - statistics
+        - s2s
+      operationId: getOutgoingS2sNumber
+      responses:
+        '200':
+          description: Successfully retrieved the number of outgoing s2s connections.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s2s_outgoing:
+                    type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/privacy_set:
+    post:
+      summary: Send a IQ set privacy stanza for a local account.
+      tags:
+        - stanza
+      operationId: privacySet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                xmlquery:
+                  type: string
+      responses:
+        '200':
+          description: Successfully sent the privacy stanza.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/private_get:
+    post:
+      summary: Get some information from a user private storage.
+      tags:
+        - private
+      operationId: privateGet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                element:
+                  type: string
+                ns:
+                  type: string
+      responses:
+        '200':
+          description: Successfully retrieved the information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/private_set:
+    post:
+      summary: Set to the user private storage.
+      tags:
+        - private
+      operationId: privateSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                element:
+                  type: string
+      responses:
+        '200':
+          description: Successfully set the information.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/process_rosteritems:
+    post:
+      summary: List/delete rosteritems that match filter.
+      tags:
+        - roster
+      operationId: processRosterItems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                subs:
+                  type: string
+                asks:
+                  type: string
+                users:
+                  type: string
+                contacts:
+                  type: string
+      responses:
+        '200':
+          description: Successfully processed the roster items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                    contact:
+                      type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/push_alltoall:
+    post:
+      summary: Add all the users to all the users of Host in Group.
+      tags:
+        - roster
+      operationId: pushAllToAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                group:
+                  type: string
+      responses:
+        '200':
+          description: Successfully added users.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/push_roster:
+    post:
+      summary: Push template roster from file to a user.
+      tags:
+        - roster
+      operationId: pushRoster
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                user:
+                  type: string
+                host:
+                  type: string
+      responses:
+        '200':
+          description: Successfully pushed roster.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/push_roster_all:
+    post:
+      summary: Push template roster from file to all those users.
+      tags:
+        - roster
+      operationId: pushRosterAll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+      responses:
+        '200':
+          description: Successfully pushed roster to all users.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/register:
+    post:
+      summary: Register a user.
+      tags:
+        - accounts
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successfully registered the user.
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/registered_users:
+    post:
+      summary: List all registered users in HOST.
+      tags:
+        - accounts
+      operationId: registeredUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+      responses:
+        '200':
+          description: Successfully retrieved the list of registered users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/registered_vhosts:
+    post:
+      summary: List all registered vhosts in SERVER.
+      tags:
+        - server
+      operationId: registeredVhosts
+      responses:
+        '200':
+          description: Successfully retrieved the list of registered vhosts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/reload_config:
+    post:
+      summary: Reload config file in memory.
+      tags:
+        - config
+      operationId: reloadConfig
+      responses:
+        '200':
+          description: Successfully reloaded the config.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/remove_mam_for_user:
+    post:
+      summary: Remove mam archive for user.
+      tags:
+        - mam
+      operationId: removeMamForUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+      responses:
+        '200':
+          description: Successfully removed the MAM archive for the user.
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/remove_mam_for_user_with_peer:
+    post:
+      summary: Remove mam archive for user with peer.
+      tags:
+        - mam
+      operationId: removeMamForUserWithPeer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                host:
+                  type: string
+                with:
+                  type: string
+      responses:
+        '200':
+          description: Successfully removed the MAM archive for the user with the specified peer.
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/reopen_log:
+    post:
+      summary: Reopen the log files after being renamed.
+      tags:
+        - logs
+      operationId: reopenLog
+      responses:
+        '200':
+          description: Successfully reopened the log files.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: An error occurred while processing the request. Try again later.
+
+  /api/request_certificate:
+    post:
+      summary: Requests certificates for specified domains.
+      tags:
+        - acme
+      operationId: requestCertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                domains:
+                  type: string
+                  description: Domains for which to acquire a certificate.
+      responses:
+        '200':
+          description: Successfully requested certificates.
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/resource_num:
+    post:
+      summary: Resource string of a session number.
+      tags:
+        - session
+      operationId: resourceNum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                num:
+                  type: integer
+                  description: ID of resource to return.
+      responses:
+        '200':
+          description: Successfully returned the resource string.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resource:
+                    type: string
+
+  /api/restart:
+    post:
+      summary: Restart ejabberd gracefully.
+      tags:
+        - server
+      operationId: restart
+      responses:
+        '200':
+          description: Successfully restarted ejabberd.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/restart_module:
+    post:
+      summary: Stop an ejabberd module, reload code, and start.
+      tags:
+        - erlang
+      operationId: restartModule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Server name.
+                module:
+                  type: string
+                  description: Module to restart.
+      responses:
+        '200':
+          description: Successfully restarted the module.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: integer
+
+  /api/restore:
+    post:
+      summary: Restore the Mnesia database from a binary backup file.
+      tags:
+        - mnesia
+      operationId: restore
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Full path to the backup file.
+      responses:
+        '200':
+          description: Successfully restored the database.
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/revoke_certificate:
+    post:
+      summary: Revokes the selected ACME certificate.
+      tags:
+        - acme
+      operationId: revokeCertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Filename of the certificate.
+      responses:
+        '200':
+          description: Successfully revoked the certificate.
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/rooms_empty_destroy:
+    post:
+      summary: Destroy the rooms that have no messages in archive.
+      tags:
+        - muc
+      operationId: roomsEmptyDestroy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service or global for all.
+      responses:
+        '200':
+          description: Successfully destroyed the empty rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rooms_empty_list:
+    post:
+      summary: List the rooms that have no messages in archive.
+      tags:
+        - muc
+      operationId: roomsEmptyList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service or global for all.
+      responses:
+        '200':
+          description: Successfully listed the empty rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rooms_unused_destroy:
+    post:
+      summary: Destroy the rooms that are unused for many days in the service.
+      tags:
+        - muc
+      operationId: roomsUnusedDestroy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service or global for all.
+                days:
+                  type: integer
+                  description: Number of days.
+      responses:
+        '200':
+          description: Successfully destroyed the unused rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rooms_unused_list:
+    post:
+      summary: List the rooms that are unused for many days in the service.
+      tags:
+        - muc
+      operationId: roomsUnusedList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: MUC service or global for all.
+                days:
+                  type: integer
+                  description: Number of days.
+      responses:
+        '200':
+          description: Successfully listed the unused rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rotate_log:
+    post:
+      summary: Rotate the log files.
+      tags:
+        - logs
+      operationId: rotateLog
+      responses:
+        '200':
+          description: Successfully rotated the log files.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/send_direct_invitation:
+    post:
+      summary: Send a direct invitation to several destinations.
+      tags:
+        - muc_room
+      operationId: sendDirectInvitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                password:
+                  type: string
+                  description: Password.
+                reason:
+                  type: string
+                  description: Reason text.
+                users:
+                  type: string
+                  description: Users JIDs separated with `:` characters.
+      responses:
+        '200':
+          description: Successfully sent the direct invitation.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/send_message:
+    post:
+      summary: Send a message to a local or remote bare of full JID.
+      tags:
+        - stanza
+      operationId: sendMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: Message type.
+                from:
+                  type: string
+                  description: Sender JID.
+                to:
+                  type: string
+                  description: Receiver JID.
+                subject:
+                  type: string
+                  description: Subject.
+                body:
+                  type: string
+                  description: Body.
+      responses:
+        '200':
+          description: Successfully sent the message.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/send_stanza:
+    post:
+      summary: Send a stanza; provide From JID and valid To JID.
+      tags:
+        - stanza
+      operationId: sendStanza
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  description: Sender JID.
+                to:
+                  type: string
+                  description: Destination JID.
+                stanza:
+                  type: string
+                  description: Stanza.
+      responses:
+        '200':
+          description: Successfully sent the stanza.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/send_stanza_c2s:
+    post:
+      summary: Send a stanza from an existing C2S session.
+      tags:
+        - stanza
+      operationId: sendStanzaC2S
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: Server name.
+                resource:
+                  type: string
+                  description: Resource.
+                stanza:
+                  type: string
+                  description: Stanza.
+      responses:
+        '200':
+          description: Successfully sent the stanza from an existing C2S session.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_last:
+    post:
+      summary: Set last activity information.
+      tags:
+        - last
+      operationId: setLast
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                timestamp:
+                  type: integer
+                  description: Number of seconds since epoch.
+                status:
+                  type: string
+                  description: Status message.
+      responses:
+        '200':
+          description: Successfully set last activity information.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_loglevel:
+    post:
+      summary: Set the loglevel.
+      tags:
+        - logs
+      operationId: setLoglevel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                loglevel:
+                  type: string
+                  description: Desired logging level - none | emergency | alert | critical | error | warning | notice | info | debug.
+      responses:
+        '200':
+          description: Successfully set the loglevel.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_master:
+    post:
+      summary: Set master node of the clustered Mnesia tables.
+      tags:
+        - cluster
+      operationId: setMaster
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodename:
+                  type: string
+                  description: Name of the erlang node that will be considered master of this node.
+      responses:
+        '200':
+          description: Successfully set the master node.
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/set_nickname:
+    post:
+      summary: Set nickname in a user's vCard.
+      tags:
+        - vcard
+      operationId: setNickname
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                nickname:
+                  type: string
+                  description: Nickname.
+      responses:
+        '200':
+          description: Successfully set the nickname in the user's vCard.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_presence:
+    post:
+      summary: Set presence of a session.
+      tags:
+        - session
+      operationId: setPresence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                resource:
+                  type: string
+                  description: Resource.
+                type:
+                  type: string
+                  description: Type - available, error, probe...
+                show:
+                  type: string
+                  description: Show - away, chat, dnd, xa.
+                status:
+                  type: string
+                  description: Status text.
+                priority:
+                  type: string
+                  description: Priority, provide this value as an integer.
+      responses:
+        '200':
+          description: Successfully set presence.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_room_affiliation:
+    post:
+      summary: Change an affiliation in a MUC room.
+      tags:
+        - muc_room
+      operationId: setRoomAffiliation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Room name.
+                service:
+                  type: string
+                  description: MUC service.
+                jid:
+                  type: string
+                  description: User JID.
+                affiliation:
+                  type: string
+                  description: Affiliation to set.
+      responses:
+        '200':
+          description: Successfully changed the affiliation in the MUC room.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_vcard:
+    post:
+      summary: Set content in a vCard field.
+      tags:
+        - vcard
+      operationId: setVcard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                name:
+                  type: string
+                  description: Field name.
+                content:
+                  type: string
+                  description: Value.
+      responses:
+        '200':
+          description: Successfully set content in a vCard field.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_vcard2:
+    post:
+      summary: Set content in a vCard subfield.
+      tags:
+        - vcard
+      operationId: setVcard2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                name:
+                  type: string
+                  description: Field name.
+                subname:
+                  type: string
+                  description: Subfield name.
+                content:
+                  type: string
+                  description: Value.
+      responses:
+        '200':
+          description: Successfully set content in a vCard subfield.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/set_vcard2_multi:
+    post:
+      summary: Set multiple contents in a vCard subfield.
+      tags:
+        - vcard
+      operationId: setVcard2Multi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+                name:
+                  type: string
+                  description: Field name.
+                subname:
+                  type: string
+                  description: Subfield name.
+                contents:
+                  type: array
+                  items:
+                    type: string
+                  description: List of values to set in the vCard subfield.
+      responses:
+        '200':
+          description: Successfully set multiple contents in a vCard subfield.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/srg_create:
+    post:
+      summary: Create a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                group:
+                  type: string
+                  description: Group identifier.
+                host:
+                  type: string
+                  description: Group server name.
+                label:
+                  type: string
+                  description: Group name.
+                description:
+                  type: string
+                  description: Group description.
+                display:
+                  type: string
+                  description: Groups to display.
+      responses:
+        '200':
+          description: Successfully created a Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/srg_delete:
+    post:
+      summary: Delete a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgDelete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                group:
+                  type: string
+                  description: Group identifier.
+                host:
+                  type: string
+                  description: Group server name.
+      responses:
+        '200':
+          description: Successfully deleted a Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/srg_get_info:
+    post:
+      summary: Get info of a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgGetInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                group:
+                  type: string
+                  description: Group identifier.
+                host:
+                  type: string
+                  description: Group server name.
+      responses:
+        '200':
+          description: Successfully retrieved information about a Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      description: Information key.
+                    value:
+                      type: string
+                      description: Information value.
+
+  /api/srg_get_members:
+    post:
+      summary: Get members of a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgGetMembers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                group:
+                  type: string
+                  description: Group identifier.
+                host:
+                  type: string
+                  description: Group server name.
+      responses:
+        '200':
+          description: Successfully retrieved members of a Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/srg_list:
+    post:
+      summary: List the Shared Roster Groups in a host.
+      tags:
+        - shared_roster_group
+      operationId: srgList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Successfully listed the Shared Roster Groups in a host.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/srg_user_add:
+    post:
+      summary: Add the JID user@host to a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgUserAdd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: User server name.
+                group:
+                  type: string
+                  description: Group identifier.
+                grouphost:
+                  type: string
+                  description: Group server name.
+      responses:
+        '200':
+          description: Successfully added the user to the Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/srg_user_del:
+    post:
+      summary: Delete the JID user@host from a Shared Roster Group.
+      tags:
+        - shared_roster_group
+      operationId: srgUserDel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: User server name.
+                group:
+                  type: string
+                  description: Group identifier.
+                grouphost:
+                  type: string
+                  description: Group server name.
+      responses:
+        '200':
+          description: Successfully deleted the user from the Shared Roster Group.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/stats:
+    post:
+      summary: Get statistical value - registeredusers, onlineusers, onlineusersnode, uptimeseconds, processes.
+      tags:
+        - statistics
+      operationId: getStats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Statistic name.
+      responses:
+        '200':
+          description: Successfully retrieved the statistical value.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stat:
+                    type: integer
+                    description: Integer statistic value.
+
+  /api/stats_host:
+    post:
+      summary: Get statistical value for this host - registeredusers, onlineusers.
+      tags:
+        - statistics
+      operationId: getStatsHost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Statistic name.
+                host:
+                  type: string
+                  description: Server JID.
+      responses:
+        '200':
+          description: Successfully retrieved the statistical value for this host.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stat:
+                    type: integer
+                    description: Integer statistic value.
+
+  /api/status:
+    post:
+      summary: Get status of the ejabberd server.
+      tags:
+        - server
+      operationId: getStatus
+      responses:
+        '200':
+          description: Successfully retrieved the status of the ejabberd server.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+
+  /api/status_list:
+    post:
+      summary: List of logged users with this status.
+      tags:
+        - session
+      operationId: getStatusList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Status type to check.
+      responses:
+        '200':
+          description: Successfully retrieved the list of logged users with the specified status.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: User name.
+                    host:
+                      type: string
+                      description: Server name.
+                    resource:
+                      type: string
+                      description: Resource.
+                    priority:
+                      type: integer
+                      description: Priority.
+                    status:
+                      type: string
+                      description: Status.
+
+  /api/status_list_host:
+    post:
+      summary: List of users logged in host with their statuses.
+      tags:
+        - session
+      operationId: getStatusListHost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Server name.
+                status:
+                  type: string
+                  description: Status type to check.
+      responses:
+        '200':
+          description: Successfully retrieved the list of users logged in the host with their statuses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: User name.
+                    host:
+                      type: string
+                      description: Server name.
+                    resource:
+                      type: string
+                      description: Resource.
+                    priority:
+                      type: integer
+                      description: Priority.
+                    status:
+                      type: string
+                      description: Status.
+
+  /api/status_num:
+    post:
+      summary: Number of logged users with a specific status.
+      tags:
+        - session
+        - statistics
+      operationId: getStatusNum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Status type to check.
+      responses:
+        '200':
+          description: Successfully retrieved the number of connected sessions with the given status type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: integer
+                    description: Number of connected sessions.
+
+  /api/status_num_host:
+    post:
+      summary: Number of logged users with a specific status in a host.
+      tags:
+        - session
+        - statistics
+      operationId: getStatusNumHost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                host:
+                  type: string
+                  description: Server name.
+                status:
+                  type: string
+                  description: Status type to check.
+      responses:
+        '200':
+          description: Successfully retrieved the number of connected sessions with the given status type in the host.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: integer
+                    description: Number of connected sessions.
+
+  /api/stop:
+    post:
+      summary: Stop Ejabberd gracefully.
+      tags:
+        - server
+      operationId: stopEjabberd
+      responses:
+        '200':
+          description: Successfully stopped Ejabberd gracefully.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/stop_kindly:
+    post:
+      summary: Inform users and rooms, wait, and stop the server.
+      tags:
+        - server
+      operationId: stopKindly
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delay:
+                  type: integer
+                  description: Seconds to wait.
+                announcement:
+                  type: string
+                  description: Announcement to send, with quotes.
+      responses:
+        '200':
+          description: Successfully informed users and rooms, waited, and stopped the server.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/stop_s2s_connections:
+    post:
+      summary: Stop all s2s outgoing and incoming connections.
+      tags:
+        - s2s
+      operationId: stopS2sConnections
+      responses:
+        '200':
+          description: Successfully stopped all s2s outgoing and incoming connections.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/subscribe_room:
+    post:
+      summary: Subscribe to a MUC conference.
+      tags:
+        - muc_room
+      operationId: subscribeToRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User JID.
+                nick:
+                  type: string
+                  description: User's nick.
+                room:
+                  type: string
+                  description: The room to subscribe.
+                nodes:
+                  type: string
+                  description: Nodes separated by commas.
+      responses:
+        '200':
+          description: Successfully subscribed to the MUC conference.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/subscribe_room_many:
+    post:
+      summary: Subscribe several users to a MUC conference.
+      tags:
+        - muc_room
+      operationId: subscribeToRoomMany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      jid:
+                        type: string
+                        description: User JID.
+                      nick:
+                        type: string
+                        description: User's nick.
+                room:
+                  type: string
+                  description: The room to subscribe.
+                nodes:
+                  type: string
+                  description: Nodes separated by commas.
+      responses:
+        '200':
+          description: Successfully subscribed several users to the MUC conference.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/unban_ip:
+    post:
+      summary: Remove banned IP addresses from the fail2ban table.
+      tags:
+        - accounts
+      operationId: unbanIp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: IP address, optionally with a network mask.
+      responses:
+        '200':
+          description: Successfully removed banned IP addresses.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unbanned:
+                    type: integer
+                    description: Amount of unbanned entries, or negative in case of error.
+
+  /api/unregister:
+    post:
+      summary: Unregister a user.
+      tags:
+        - accounts
+      operationId: unregisterUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: Username.
+                host:
+                  type: string
+                  description: Local vhost served by ejabberd.
+      responses:
+        '200':
+          description: Successfully unregistered a user.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+
+  /api/unsubscribe_room:
+    post:
+      summary: Unsubscribe from a MUC conference.
+      tags:
+        - muc_room
+      operationId: unsubscribeFromRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User JID.
+                room:
+                  type: string
+                  description: The room to subscribe.
+      responses:
+        '200':
+          description: Successfully unsubscribed from the MUC conference.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/update:
+    post:
+      summary: Update the given module or use the keyword 'all'.
+      tags:
+        - server
+      operationId: updateModule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module:
+                  type: string
+                  description: Module name.
+      responses:
+        '200':
+          description: Successfully updated the module.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Raw result string.
+
+  /api/update_list:
+    post:
+      summary: List modified modules that can be updated.
+      tags:
+        - server
+      operationId: updateList
+      responses:
+        '200':
+          description: Successfully listed modified modules that can be updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/update_sql:
+    post:
+      summary: Convert MS SQL, MySQL, or PostgreSQL DB to the new format.
+      tags:
+        - sql
+      operationId: updateSql
+      responses:
+        '200':
+          description: Successfully converted the database to the new format.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /api/user_resources:
+    post:
+      summary: List a user's connected resources.
+      tags:
+        - session
+      operationId: listUserResources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Successfully listed the user's connected resources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/user_sessions_info:
+    post:
+      summary: Get information about all sessions of a user.
+      tags:
+        - session
+      operationId: getUserSessionsInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User name.
+                host:
+                  type: string
+                  description: Server name.
+      responses:
+        '200':
+          description: Successfully retrieved information about all sessions of a user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    connection:
+                      type: string
+                      description: Connection type.
+                    ip:
+                      type: string
+                      description: IP address.
+                    port:
+                      type: integer
+                      description: Port.
+                    priority:
+                      type: integer
+                      description: Priority.
+                    node:
+                      type: string
+                      description: Node.
+                    uptime:
+                      type: integer
+                      description: Uptime.
+                    status:
+                      type: string
+                      description: Status.
+                    resource:
+                      type: string
+                      description: Resource.
+                    statustext:
+                      type: string
+                      description: Status text.
